@@ -1,0 +1,39 @@
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local holding = false
+local humanoid
+
+local function setup(char)
+    humanoid = char:WaitForChild("Humanoid")
+end
+
+if player.Character then
+    setup(player.Character)
+end
+
+player.CharacterAdded:Connect(setup)
+
+UIS.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.Space then
+        holding = true
+    end
+end)
+
+UIS.InputEnded:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.Space then
+        holding = false
+    end
+end)
+
+UIS.JumpRequest:Connect(function()
+    holding = true
+end)
+
+RunService.Heartbeat:Connect(function()
+    if holding and humanoid and humanoid.Health > 0 then
+        humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
